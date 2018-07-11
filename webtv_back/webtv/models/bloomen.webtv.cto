@@ -1,0 +1,43 @@
+namespace bloomen.webtv
+
+asset Product identified by productID {
+  o String productID
+  o String title
+  o Double value
+  o String URL
+  o String description
+  o Integer timesSold
+  --> User supplier
+}
+
+participant User identified by hashID {
+  o String hashID
+  o Double balance
+  o Product[] offeredProducts optional
+  o Product[] purchasedProducts optional
+}
+
+abstract transaction ProductTransaction {
+  --> Product product
+} // has already 'o DateTime timestamp' 
+
+transaction NewProductTx extends ProductTransaction {
+}
+
+transaction BuyProductTx extends ProductTransaction {
+  --> User consumer
+}
+
+transaction TransferTokensTx {
+  --> User payer
+  --> User payee
+  o Double amount
+}
+
+transaction CreditTest {
+  --> User requester
+}
+
+event GenericEvent {
+  o String ref
+}

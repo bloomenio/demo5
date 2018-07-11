@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Bloomen WebTV</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link href="css/material.min.css" rel="stylesheet">
+  <link href="css/dialog-polyfill.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id="app">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title"><span>BLO<span class="bloomen-title-O">O</span>MEN</span> WebTV</span>
+        </div>
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+          <a href="#home-tab" class="mdl-layout__tab is-active"><i class="material-icons">home</i></a>
+          <a href="#videos-tab" class="mdl-layout__tab"><i class="material-icons">theaters</i> My Videos</a>
+          <a href="#wallet-tab" class="mdl-layout__tab"><i class="material-icons">account_balance_wallet</i> Wallet</a>
+          <a href="#profile-tab" class="mdl-layout__tab"><i class="material-icons">account_circle</i> Profile</a>
+        </div>
+      </header>
+      <div class="mdl-layout__drawer">
+        <h3>USERS</h3>
+        <ul class="mdl-list">
+          <li v-cloak v-for="(v,i) in users" v-if="v.hash != wallet.hashID" class="mdl-list__item">
+            <span class="mdl-list__item-primary-content">
+              <a :href="'/'+encodeURIComponent(v.hash)">{{v.firstname}} {{v.surname}}</a>
+            </span>
+          </li>
+        </ul>
+      </div>
+      <main class="mdl-layout__content">
+        <section class="mdl-layout__tab-panel is-active" id="home-tab">
+          <div class="page-content">
+            <div class="cards">
+              <div class="video-card mdl-card mdl-shadow--2dp" v-for="(v,k) in products" v-cloak>
+                <div class="mdl-card__media">
+                  <iframe width="100%" height="200px" :src="v.URL" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+                <div class="mdl-card__supporting-text" v-text="v.description.length<35?v.title:v.description"></div>
+                <div class="mdl-card__actions mdl-card--border">
+                  <strong v-if="wallet.purchasedProducts[k]">PURCHASED</strong>
+                  <strong v-else-if="wallet.offeredProducts[k]">OWNER</strong>
+                  <a v-else class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" @click="buyProduct(k)">Buy {{v.value}}$</a>
+                </div>
+              </div>
+            </div>
+            <div class="mdl-progress mdl-js-progress mdl-progress__indeterminate" v-show="loading_products"></div>           
+          </div>
+          <dialog class="mdl-dialog" id="dialog_buy_product">
+            <h4 class="mdl-dialog__title">Confirm?</h4>
+            <div class="mdl-dialog__content">
+              <p v-text="dialog_buy_product_text"></p>
+            </div>
+            <div class="mdl-dialog__actions">
+              <button type="button" class="mdl-button" @click="buyProductButton">Buy</button>
+              <button type="button" class="mdl-button close" @click="closeDialog('dialog_buy_product')">Cancel</button>
+            </div>
+          </dialog>
+        </section>
+        <section class="mdl-layout__tab-panel" id="videos-tab">
+          <div class="page-content">   
+            <div v-if="Object.keys(wallet.offeredProducts).length">       
+              <h3>UPLOADED</h3>
+              <button id="upload-product-btn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" @click="uploadProduct">
+                <i class="material-icons">cloud_upload</i>
+              </button>
+              <br>
+              <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+                <thead>
+                  <tr>
+                    <th class="mdl-data-table__cell--non-numeric">Title</th>
+                    <th>Price</th>
+                    <th>Sales</th>
+                    <th>Advertise</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(v,k) in wallet.offeredProducts">
+                    <td v-text="v.title" class="mdl-data-table__cell--non-numeric"></td>
+                    <td v-text="v.value"></td>
+                    <td v-text="v.timesSold">25</td>
+                    <td><input type="checkbox" class="mdl-checkbox__input" checked></td>
+                  </tr>
+                </tbody>
+              </table>              
+            </div>
+            <br><br><br>
+            <div v-if="Object.keys(wallet.purchasedProducts).length">
+              <h3>PURCHASED</h3>
+              <div class="clear"></div>
+              <div class="cards">
+                <div class="video-card mdl-card mdl-shadow--2dp" v-for="(v,k) in wallet.purchasedProducts">
+                  <div class="mdl-card__media">
+                    <iframe width="100%" height="200px" :src="v.URL" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                  </div>
+                  <div class="mdl-card__supporting-text"  v-text="v.description.length<35?v.title:v.description"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <dialog class="mdl-dialog" id="dialog_upload_product">
+            <h4 class="mdl-dialog__title">Register a new product</h4>
+            <br>
+            <div class="mdl-dialog__content">
+              <form action="#">
+                <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':productForm.title}]">
+                  <input class="mdl-textfield__input" type="text" id="productForm_title" v-model="productForm.title">
+                  <label class="mdl-textfield__label" for="productForm_title">Title</label>
+                </div>
+                <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':productForm.url}]">
+                  <input class="mdl-textfield__input" type="text" id="productForm_url" v-model="productForm.url" pattern=".*youtube\.[a-z]{2,3}/watch\?v=[a-zA-Z0-9]{10,}">
+                  <label class="mdl-textfield__label" for="productForm_url">URL</label>
+                  <span class="mdl-textfield__error"></span>
+                </div>
+                <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':productForm.value}]">
+                  <input class="mdl-textfield__input" type="text" id="productForm_value" v-model="productForm.value" pattern="[0-9]*(\.[0-9]+)?">
+                  <label class="mdl-textfield__label" for="productForm_value">Value</label>
+                  <span class="mdl-textfield__error">Input is not a number!</span>
+                </div>
+                <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':productForm.description}]">
+                  <input class="mdl-textfield__input" type="text" id="productForm_description" v-model="productForm.description">
+                  <label class="mdl-textfield__label" for="productForm_description">Description</label>
+                </div>           
+              </form>
+            </div>
+            <div class="mdl-dialog__actions">
+              <button type="button" class="mdl-button" @click="uploadProductButton">Register</button>
+              <button type="button" class="mdl-button close" @click="closeDialog('dialog_upload_product')">Cancel</button>
+            </div>
+          </dialog>
+        </section>
+        <section class="mdl-layout__tab-panel" id="wallet-tab">
+          <div class="page-content">
+            <div class="mdl-progress mdl-js-progress mdl-progress__indeterminate" v-show="!wallet.hashID"></div>
+            <div v-show="wallet.hashID">
+              <h3>ADDRESS</h3>
+              <span class="mdl-chip mdl-chip--contact">
+                <span class="mdl-chip__contact mdl-color--teal mdl-color-text--white" v-text="'$'+Number(wallet.balance).toFixed(2)"></span>
+                <span class="mdl-chip__text" v-text="wallet.hashID"></span>
+              </span>
+              <br>
+              <div class="clear"></div>
+              <h3 id="transfer-tokens">TRANSFER</h3>
+              <button id="transfer-tokens-btn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" @click="sendTokens">
+                <i class="material-icons">send</i>
+              </button>
+              <div class="mdl-tooltip" data-mdl-for="transfer-tokens-btn">Transfer Tokens</div>
+              <div class="clear"></div>
+              <form action="#">
+                <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':transForm.receiver}]">
+                  <input class="mdl-textfield__input" type="text" id="transfer_address" v-model="transForm.receiver">
+                  <label class="mdl-textfield__label" for="transfer_address">Receiver</label>
+                </div>
+                <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':transForm.amount}]">
+                  <input class="mdl-textfield__input" type="text" pattern="[0-9]*(\.[0-9]+)?" id="transfer_amount" v-model="transForm.amount">
+                  <label class="mdl-textfield__label" for="transfer_amount">Amount</label>
+                  <span class="mdl-textfield__error">Input is not a number!</span>
+                </div>
+              </form>
+              <br>
+              <div v-show="transactions.length">              
+                <h3>TRANSACTION HISTORY</h3>
+                <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+                  <thead>
+                    <tr>
+                      <th class="mdl-data-table__cell--non-numeric">Sender</th>
+                      <th class="mdl-data-table__cell--non-numeric">Receiver</th>
+                      <th>Amount</th>
+                      <th class="mdl-data-table__cell--non-numeric">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(v,i) in transactions">
+                      <td :class="['mdl-data-table__cell--non-numeric',{'emphasize':v.payer==wallet.hashID}]" v-text="v.payer"></td>
+                      <td :class="['mdl-data-table__cell--non-numeric',{'emphasize':v.payee==wallet.hashID}]" v-text="v.payee"></td>
+                      <td>{{v.amount}}$</td>
+                      <td class="mdl-data-table__cell--non-numeric">{{v.timestamp | date}}</td>
+                    </tr>              
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="mdl-layout__tab-panel" id="profile-tab">
+          <div class="page-content">
+            <h3 id="profile-save">PROFILE INFO</h3>
+            <button id="update-info-btn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" @click="saveProfile">
+              <i class="material-icons">save</i>
+            </button>
+            <div class="mdl-tooltip" data-mdl-for="update-info-btn">Update Info</div>
+            <div class="clear"></div>
+            <form action="#">
+              <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':profile.firstname}]">
+                <input class="mdl-textfield__input" type="text" id="profile_firstname" v-model="profile.firstname">
+                <label class="mdl-textfield__label" for="profile_firstname">Firstname</label>
+              </div>
+              <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':profile.surname}]">
+                <input class="mdl-textfield__input" type="text" id="profile_surname" v-model="profile.surname">
+                <label class="mdl-textfield__label" for="profile_surname">Lastname</label>
+              </div>
+              <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':profile.birth}]">
+                <input class="mdl-textfield__input" type="text" id="profile_birth" v-model="profile.birth">
+                <label class="mdl-textfield__label" for="profile_birth">Date of Birth</label>
+              </div>
+              <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':profile.gender}]">
+                <select class="mdl-textfield__input" id="profile_gender" v-model="profile.gender">
+                  <option></option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+                <label class="mdl-textfield__label"  for="profile_gender">Gender</label>
+              </div>
+              <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':profile.tin}]">
+                <input class="mdl-textfield__input" type="text" id="profile_identification" v-model="profile.tin">
+                <label class="mdl-textfield__label" for="profile_identification">Identification</label>
+              </div>
+              <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':profile.email}]">
+                <input class="mdl-textfield__input" type="text" id="profile_email" v-model="profile.email">
+                <label class="mdl-textfield__label" for="profile_email">Email</label>
+              </div>           
+            </form>
+            <br><br>
+            <div id="profile-preferences">
+              <h3>PREFERENCES</h3>
+              <button style="visibility: hidden" id="add-preference-btn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+                <i class="material-icons">add</i>
+              </button>
+              <br>
+              <span class="sharing-note">click to allow sharing with advertisers</span>
+              <div class="clear"></div>
+              <span v-for="(v,i) in profile.preferences" :class="['mdl-chip',{'sharing-allowed':v[1]}]" @click="savePreferenceChange(i)">
+                <span class="mdl-chip__text" v-text="v[0]"></span>
+              </span>                     
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <div id="toast" class="mdl-js-snackbar mdl-snackbar">
+    <div class="mdl-snackbar__text"></div>
+    <button class="mdl-snackbar__action" type="button"></button>
+  </div>
+
+  <script src="js/vue.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/material.min.js"></script>
+  <script src="js/socket.io.js"></script>
+  <script src="js/dialog-polyfill.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

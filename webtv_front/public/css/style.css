@@ -1,0 +1,222 @@
+
+.page-content{
+	padding-top: 80px;
+	width: 85%;
+	margin: 0 auto;
+	padding-bottom: 100px;
+}
+
+.page-content h3, .page-content h4, label{
+	color: #fff !important;
+}
+
+.mdl-layout__content {
+	background-color: #273482;
+}
+
+.mdl-layout__tab-bar .material-icons {
+	vertical-align: middle;
+	margin-right: 10px;
+}
+
+.mdl-layout-title{
+	color: #fff;
+}
+
+.mdl-layout-title span{
+	font-weight: bold;
+}
+
+.mdl-layout-title span span{
+	color: #66c4ff;
+	margin-left:-4px;
+}
+
+.cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 320px);
+	grid-gap: 3em;    
+}
+
+table {
+	width: 100%;
+	max-width: 100% !important;
+}
+
+#wallet-tab .mdl-chip__contact {
+	width: 130px;
+	font-weight: bold;
+	float: left;
+}
+
+#wallet-tab .mdl-chip {
+	width: 70%;
+	min-width: 590px;
+	text-align: right;
+}
+
+#wallet-tab > div > div > h3:first-child {
+	float: left;
+	margin-top: 0;
+	margin-right: 4%;
+	width: 24%;
+}
+
+#videos-tab > div > div > h3:first-child {
+	float: left;
+	margin-top: 0;
+	margin-right: 4%;
+}
+
+#upload-product-btn {
+	margin-top: -5px;
+}
+
+input{
+	color: #fff !important;
+	border-color: #fff;
+}
+
+form > div {
+	width: 100% !important;
+}
+
+.clear{
+	clear: both;
+}
+
+#wallet-tab form {
+	display: grid;
+	grid-gap: 5%;
+	grid-template-columns: 70% 25%;
+}
+
+form .mdl-button {
+	margin: 0;
+	margin-top: 10px;
+}
+
+input:focus + label{
+	color: #06bee1 !important;
+}
+
+input:focus{
+	border-color: #06bee1 !important;
+}
+
+#wallet-tab .page-content, #profile-tab .page-content{
+	max-width: 980px !important;
+}
+
+.mdl-data-table {
+	white-space: normal !important;
+}
+
+form select{
+	background-color:  #273482 !important;
+	color: white !important;
+}
+
+#profile-tab form {
+	display: grid;
+	grid-template-columns: auto auto;
+	grid-gap: 10px 60px;
+}
+
+#profile-tab form button {
+	grid-row-start: 4;
+}
+
+#profile-tab .mdl-chip {
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+#profile-tab #profile-preferences h3 {
+	float: left;
+	margin-right: 30px;
+	margin-bottom: 0;
+}
+
+#profile-preferences .mdl-button {
+	margin-top: 15px;
+}
+
+.mdl-chip.sharing-allowed {
+	color: white;
+	background-color: #06bee1 !important;
+}
+
+#profile-save, #transfer-tokens {
+	float: left;
+	margin-bottom: 0;
+	margin-right: 30px;
+}
+
+#profile-save + button, #transfer-tokens + button{
+	margin-top: 15px;
+}
+
+.sharing-note {
+	color: #fff;
+	position: relative;
+	top: -13px;
+	font-style: italic;
+	font-size: 0.9em;
+}
+
+.mdl-card__supporting-text{
+	height: 3em;
+	overflow: auto;
+}
+
+.mdl-progress {
+	margin: 0 auto;
+}
+
+.emphasize {
+	font-weight: bold;
+}
+
+#dialog_upload_product {
+	min-width: 410px;
+}
+
+#dialog_upload_product input{
+	color: #273482 !important;
+	border-bottom: 1px solid #273482;
+}
+
+#dialog_upload_product label{
+	color: #273482 !important;
+}
+
+#dialog_upload_product input:focus + label{
+	color: #06bee1 !important;
+}
+
+.mdl-card__actions strong{
+	margin: 0 0 0 15px;
+	padding-top: 10px;
+	display: inline-block;
+}
+
+.mdl-layout__drawer h3{
+    margin-bottom: 0;
+    margin-left: 14px;
+    color: #273482;
+}
+
+.mdl-layout__drawer a{
+    text-decoration: none;
+}
+
+/*
+
+app.productForm = {
+  title: 'The European Refugee Crisis and Syria Explained',
+  url: 'https://www.youtube.com/embed/RvOnXh3NN9w',
+  value: 1.99,
+  description: "Why is the refugee crisis all over the news? How is this related to Syria? Why should we care at all?"
+}
+*/

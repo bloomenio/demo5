@@ -1,0 +1,47 @@
+rule EverybodyCanReadEverything {
+    description: "Allow all participants read access to all resources"
+    participant: "bloomen.webtv.User"
+    operation: READ
+    resource: "bloomen.webtv.*"
+    action: ALLOW
+}
+
+rule EverybodyCanSubmitTransactions {
+    description: "Allow all participants to submit transactions"
+    participant: "bloomen.webtv.User"
+    operation: CREATE
+    resource: "bloomen.webtv.User"
+    action: ALLOW
+}
+
+rule AdminCanCreate {
+  description: "Allow admin to create user"
+  participant:"org.hyperledger.composer.system.NetworkAdmin#admin"
+  operation: CREATE
+  resource: "bloomen.webtv.**"
+  action: ALLOW
+}
+
+rule AdminCanReadEverything {
+    description: "Allow admin read access to all resources"
+    participant:"org.hyperledger.composer.system.NetworkAdmin#admin"
+    operation: READ
+    resource: "bloomen.webtv.**"
+    action: ALLOW
+}
+
+rule AdminCanUpdate {
+  description: "Allow admin to update everything"
+  participant:"org.hyperledger.composer.system.NetworkAdmin#admin"
+  operation: UPDATE, DELETE
+  resource: "bloomen.webtv.**"
+  action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
