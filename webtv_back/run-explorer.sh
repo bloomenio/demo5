@@ -6,12 +6,12 @@
 # mysql_secure_installation
 # service mysql status
 
-echo "Change mysql connection password from 'root' to '123456', admin's 'key' & 'cert' paths."
+echo "Change mysql connection password, admin's paths for 'key' & 'cert'."
 cd blockchain-explorer/
 # nano config.json
 
 echo "If password changed, then up Fabric Explorer."
-mysql -uroot -p123456 < db/fabricexplorer.sql
+mysql -uroot -p < db/fabricexplorer.sql
 npm install
 npm audit fix
 ./start.sh
