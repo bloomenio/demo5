@@ -9,7 +9,7 @@ composer network install --card PeerAdmin@hlfv1 --archiveFile webtv@0.1.4.bna
 composer network start --networkName webtv --networkVersion 0.1.4 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file admin@webtv  # ls ~/.composer/cards/ --> PeerAdmin@hlfv1/
 composer card import --file admin@webtv # ls ~/.composer/cards/ --> admin@webtv/  PeerAdmin@hlfv1/
 # composer network ping -c admin@webtv
-composer-rest-server -c admin@webtv -n never -w true
+composer-rest-server -c admin@webtv -n never -w true &
 
 # To upgrade bna:
 # # In package.json change version of bn (business network).
