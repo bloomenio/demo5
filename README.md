@@ -17,5 +17,5 @@ http://demo5.bloomen.io
 ```
 cd demo5/
 sudo apt-get update
-./run-demo.sh
+./run-demo.sh &
 ```
