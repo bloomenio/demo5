@@ -48,7 +48,7 @@
                 <div class="mdl-card__actions mdl-card--border">
                   <strong v-if="wallet.purchasedProducts[k]">PURCHASED</strong>
                   <strong v-else-if="wallet.offeredProducts[k]">OWNER</strong>
-                  <a v-else class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" @click="buyProduct(k)">Buy {{v.value}}$</a>
+                  <a v-else class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" @click="buyProduct(k)">Buy {{v.value}} BTC</a>
                 </div>
               </div>
             </div>
@@ -116,9 +116,9 @@
                   <label class="mdl-textfield__label" for="productForm_title">Title</label>
                 </div>
                 <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':productForm.url}]">
-                  <input class="mdl-textfield__input" type="text" id="productForm_url" v-model="productForm.url" pattern=".*youtube\.[a-z]{2,3}/watch\?v=[a-zA-Z0-9]{10,}">
+                  <input class="mdl-textfield__input" type="text" id="productForm_url" v-model="productForm.url" pattern=".*youtube\.[a-z]{2,3}/watch\?v=[a-zA-Z0-9_-&]{10,}">
                   <label class="mdl-textfield__label" for="productForm_url">URL</label>
-                  <span class="mdl-textfield__error"></span>
+                  <span class="mdl-textfield__error">Provide a valid youtube URL!</span>
                 </div>
                 <div :class="['mdl-textfield','mdl-js-textfield','mdl-textfield--floating-label',{'is-dirty':productForm.value}]">
                   <input class="mdl-textfield__input" type="text" id="productForm_value" v-model="productForm.value" pattern="[0-9]*(\.[0-9]+)?">
@@ -143,7 +143,7 @@
             <div v-show="wallet.hashID">
               <h3>ADDRESS</h3>
               <span class="mdl-chip mdl-chip--contact">
-                <span class="mdl-chip__contact mdl-color--teal mdl-color-text--white" v-text="'$'+Number(wallet.balance).toFixed(2)"></span>
+                <span class="mdl-chip__contact mdl-color--teal mdl-color-text--white" v-text="Number(wallet.balance).toFixed(2)+' BTC'"></span>
                 <span class="mdl-chip__text" v-text="wallet.hashID"></span>
               </span>
               <br>
@@ -181,7 +181,7 @@
                     <tr v-for="(v,i) in transactions">
                       <td :class="['mdl-data-table__cell--non-numeric',{'emphasize':v.payer==wallet.hashID}]" v-text="v.payer"></td>
                       <td :class="['mdl-data-table__cell--non-numeric',{'emphasize':v.payee==wallet.hashID}]" v-text="v.payee"></td>
-                      <td>{{v.amount}}$</td>
+                      <td>{{v.amount}} BTC</td>
                       <td class="mdl-data-table__cell--non-numeric">{{v.timestamp | date}}</td>
                     </tr>              
                   </tbody>
