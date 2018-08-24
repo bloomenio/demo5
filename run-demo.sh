@@ -2,7 +2,7 @@
 set -e  # To exit on first error.
 
 # Cleaning.
-if [ "$(docker ps -q)" > /dev/null ];then docker kill $(docker ps); fi
+if [ "$(docker ps -q)" > /dev/null ];then docker kill $(docker ps -q); fi
 if [ "$(docker ps -aq)" > /dev/null ];then docker rm $(docker ps -aq); fi
 # docker rmi $(docker images dev-* -q)
 # Shutdown any programs listening on ports 3000, 9090 of localhost.
