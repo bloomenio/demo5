@@ -13,6 +13,13 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const storage = require('node-persist');
 
+const basicAuth = require('express-basic-auth');
+
+app.use(basicAuth({
+    challenge: true,
+    users: { 'bloomen': 'secret' }
+}));
+
 storage.init({
 	dir: 'storage'
 });
