@@ -9,7 +9,7 @@ if [ "$(docker ps -aq)" > /dev/null ];then docker rm $(docker ps -aq); fi
 if [ "$(sudo lsof -ti :80,3000,9090)" > /dev/null ];then kill -9 $(sudo lsof -ti :80,3000,9090); fi
 
 echo "Running Anonymous Personalization Demo of plenary meeting in Cyprus, June 2018..."
-pwd=$PWD
+wd=$PWD
 cd webtv_back/
 if [ -f nohup.out ]; then rm nohup.out; fi
 nohup /bin/bash ./run.sh &
@@ -17,7 +17,7 @@ sleep 1
 while [ "$(tail -1 nohup.out)" != "Browse your REST API at http://localhost:3000/explorer" ];do sleep 5; done
 #nohup /bin/bash ./run-explorer.sh &
 #while [ "$(tail -1 nohup.out)" != "Please open Internet explorer to access ：http://localhost:9090/" ];do sleep 5; done
-cd $pwd/webtv_front/
+cd $wd/webtv_front/
 nohup /bin/bash input_data.sh &
 sleep 10
 /bin/bash run-front-end.sh &
